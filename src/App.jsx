@@ -1,12 +1,30 @@
+const logMessageFlag = true;
+
+/* -------------------------------------------
+   Section: Helper functions - Log message
+------------------------------------------- */
+
+const logMessage = (message) => {
+    if (logMessageFlag) {
+        console.log(message);
+    };
+};
+
+/* -------------------------------------------
+   Section: Question 1
+------------------------------------------- */
+
 /*Q1. JS Variable needs to be created here. Below variable is just an example. Try to add more attributes.*/
 const initialTravellers = [
   {
-    id: 1, name: 'Jack', phone: 88885555,
-    bookingTime: new Date(),
+    id: 1, name: "Jack", phone: 88885555, email: "jack@gmail.com",
+    bookingTime: new Date(), deparatureTime: new Date(),
+    departureStation: "Singapore", arrivalStation: "Bangkok", seatNumber: 1,
   },
   {
-    id: 2, name: 'Rose', phone: 88884444,
-    bookingTime: new Date(),
+    id: 2, name: "Rose", phone: 88884444, email: "rose@gmail.com",
+    bookingTime: new Date(), deparatureTime: new Date(),
+    departureStation: "Singapore", arrivalStation: "Japan", seatNumber: 2,
   },
 ];
 
@@ -97,55 +115,78 @@ class Homepage extends React.Component {
 	</div>);
 	}
 }
-class TicketToRide extends React.Component {
-  constructor() {
-    super();
-    this.state = { travellers: [], selector: 1};
-    this.bookTraveller = this.bookTraveller.bind(this);
-    this.deleteTraveller = this.deleteTraveller.bind(this);
-  }
 
-  setSelector(value)
-  {
-  	/*Q2. Function to set the value of component selector variable based on user's button click.*/
-  }
-  componentDidMount() {
-    this.loadData();
-  }
+function TicketToRide() {
+  logMessage("TicketToRide called.");
+  logMessage(JSON.stringify(initialTravellers, null, 2));
 
-  loadData() {
-    setTimeout(() => {
-      this.setState({ travellers: initialTravellers });
-    }, 500);
-  }
-
-  bookTraveller(passenger) {
-	    /*Q4. Write code to add a passenger to the traveller state variable.*/
-  }
-
-  deleteTraveller(passenger) {
-	  /*Q5. Write code to delete a passenger from the traveller state variable.*/
-  }
-  render() {
-    return (
+  return (
       <div>
         <h1>Ticket To Ride</h1>
-	<div>
-	    {/*Q2. Code for Navigation bar. Use basic buttons to create a nav bar. Use states to manage selection.*/}
-	</div>
-	<div>
-		{/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
-		{/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
-		{/*Q3. Code to call component that Displays Travellers.*/}
-		
-		{/*Q4. Code to call the component that adds a traveller.*/}
-		{/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
-	</div>
+        <div>
+        {/*Q2. Code for Navigation bar. Use basic buttons to create a nav bar. Use states to manage selection.*/}
+        </div>
+        <div>
+        {/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
+        {/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
+        {/*Q3. Code to call component that Displays Travellers.*/}
+        
+        {/*Q4. Code to call the component that adds a traveller.*/}
+        {/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
+        </div>
       </div>
-    );
-  }
+  );
 }
 
-const element = <TicketToRide />;
+// class TicketToRide extends React.Component {
+//   constructor() {
+//     super();
+//     this.state = { travellers: [], selector: 1};
+//     this.bookTraveller = this.bookTraveller.bind(this);
+//     this.deleteTraveller = this.deleteTraveller.bind(this);
+//   }
 
+//   setSelector(value)
+//   {
+//   	/*Q2. Function to set the value of component selector variable based on user's button click.*/
+//   }
+//   componentDidMount() {
+//     this.loadData();
+//   }
+
+//   loadData() {
+//     setTimeout(() => {
+//       this.setState({ travellers: initialTravellers });
+//     }, 500);
+//   }
+
+//   bookTraveller(passenger) {
+// 	    /*Q4. Write code to add a passenger to the traveller state variable.*/
+//   }
+
+//   deleteTraveller(passenger) {
+// 	  /*Q5. Write code to delete a passenger from the traveller state variable.*/
+//   }
+//   render() {
+//     return (
+//       <div>
+//         <h1>Ticket To Ride</h1>
+// 	<div>
+// 	    {/*Q2. Code for Navigation bar. Use basic buttons to create a nav bar. Use states to manage selection.*/}
+// 	</div>
+// 	<div>
+// 		{/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
+// 		{/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
+// 		{/*Q3. Code to call component that Displays Travellers.*/}
+		
+// 		{/*Q4. Code to call the component that adds a traveller.*/}
+// 		{/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
+// 	</div>
+//       </div>
+//     );
+//   }
+// }
+
+
+const element = <TicketToRide />;
 ReactDOM.render(element, document.getElementById('contents'));
