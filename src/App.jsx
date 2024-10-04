@@ -18,47 +18,15 @@ const logMessage = (message) => {
 const initialTravellers = [
   {
     id: 1, name: "Jack", phone: 88885555, email: "jack@gmail.com",
-    bookingTime: new Date(), deparatureTime: new Date(),
+    bookingTime: new Date(), departureTime: new Date(),
     departureStation: "Singapore", arrivalStation: "Bangkok", seatNumber: 1,
   },
   {
     id: 2, name: "Rose", phone: 88884444, email: "rose@gmail.com",
-    bookingTime: new Date(), deparatureTime: new Date(),
+    bookingTime: new Date(), departureTime: new Date(),
     departureStation: "Singapore", arrivalStation: "Japan", seatNumber: 2,
   },
 ];
-
-
-function TravellerRow(props) {
-  {/*Q3. Placeholder to initialize local variable based on traveller prop.*/}
-  return (
-    <tr>
-	  {/*Q3. Placeholder for rendering one row of a table with required traveller attribute values.*/}
-    </tr>
-  );
-}
-
-function Display(props) {
-  
-	/*Q3. Write code to render rows of table, reach corresponding to one traveller. Make use of the TravellerRow function that draws one row.*/
-
-  return (
-    <table className="bordered-table">
-      <thead>
-        <tr>
-	  {/*Q3. Below table is just an example. Add more columns based on the traveller attributes you choose.*/}
-          <th>ID</th>
-          <th>Name</th>
-          <th>Phone</th>
-          <th>Booking Time</th>
-        </tr>
-      </thead>
-      <tbody>
-        {/*Q3. write code to call the JS variable defined at the top of this function to render table rows.*/}
-      </tbody>
-    </table>
-  );
-}
 
 class Add extends React.Component {
   constructor() {
@@ -115,21 +83,21 @@ function Navigation( {setSelectedPage} ) {
     <div>
       <button onClick={() => setSelectedPage(1)}>Homepage</button>
       <button onClick={() => setSelectedPage(2)}>Display Travellers</button>
-      <button onClick={() => setSelectedPage(3)}>Add Travellers</button>
-      <button onClick={() => setSelectedPage(4)}>Delete Travellers</button>
+      <button onClick={() => setSelectedPage(3)}>Add Traveller</button>
+      <button onClick={() => setSelectedPage(4)}>Delete Traveller</button>
     </div>
   );
 }
 
-function Container( {selectedPage}) {
+function Container( {travellers, selectedPage}) {
   logMessage("Container called.");
 
   return (
     <div>
-    {selectedPage === 1 && <Homepage />}
-    {selectedPage === 2 && <DisplayTraveller />}
-    {selectedPage === 3 && <AddTraveller />}
-    {selectedPage === 4 && <DeleteTraveller />}
+    {selectedPage === 1 && <Homepage travellers = {travellers}/>}
+    {selectedPage === 2 && <DisplayTravellers travellers = {travellers}/>}
+    {selectedPage === 3 && <AddTraveller travellers = {travellers}/>}
+    {selectedPage === 4 && <DeleteTraveller travellers = {travellers}/>}
     </div>
   );
 }
@@ -145,11 +113,55 @@ function Homepage(){
   );
 }
 
-function DisplayTraveller(){
-  logMessage("DisplayTraveller called.");
+/* -------------------------------------------
+   Section: Question 3
+------------------------------------------- */
+
+function DisplayTravellerRow( {traveller}) {
+  logMessage("DisplayTravellerRow called.");
+  logMessage(`check: ${JSON.stringify(traveller, null, 2)}`);
+
+  return (
+    <>
+    <td>{traveller.id}</td>
+    <td>{traveller.name}</td>
+    <td>{traveller.phone}</td>
+    <td>{traveller.email}</td>
+    <td>{new Date(traveller.bookingTime).toLocaleString()}</td>
+    <td>{new Date(traveller.departureTime).toLocaleString()}</td>
+    <td>{traveller.departureStation}</td>
+    <td>{traveller.arrivalStation}</td>
+    <td>{traveller.seatNumber}</td>
+    </>
+  );
+}
+
+function DisplayTravellers({travellers}){
+  logMessage("DisplayTravellers called.");
+  logMessage(`check: ${JSON.stringify(travellers, null, 2)}`);
+
   return (
     <div>
-      Display Traveller test
+      <h2>Display Travellers</h2>
+      <table className="bordered-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Booking Time</th>
+            <th>Departure Time</th>
+            <th>Departure Station</th>
+            <th>Arrival Station</th>
+            <th>Seat Number</th>
+          </tr>
+        </thead>
+        <tbody>
+          {travellers.map(traveller => <tr key={traveller.id}><DisplayTravellerRow traveller={traveller} /></tr>)}
+        </tbody>
+      </table>
+
     </div>
   );
 }
@@ -198,7 +210,8 @@ function TicketToRide() {
         <h1>Ticket To Ride</h1>
 
         <Navigation setSelectedPage = {setSelectedPage}/>
-        <Container selectedPage = {selectedPage} />
+        <p></p>
+        <Container travellers = {travellers} selectedPage = {selectedPage} />
           
         {/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
         {/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
