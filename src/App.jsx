@@ -17,14 +17,16 @@ const logMessage = (message) => {
 /*Q1. JS Variable needs to be created here. Below variable is just an example. Try to add more attributes.*/
 const initialTravellers = [
   {
-    id: 1, name: "Jack", phone: 88885555, email: "jack@gmail.com",
-    bookingTime: new Date(), departureTime: new Date(),
-    departureStation: "Singapore", arrivalStation: "Bangkok", seatNumber: 1,
+    id: 1, bookingTime: new Date(),
+    name: "Jack", phone: 88885555, email: "jack@gmail.com",
+    departureTime: new Date(), departureStation: "Singapore",
+    arrivalStation: "Bangkok",
   },
   {
-    id: 2, name: "Rose", phone: 88884444, email: "rose@gmail.com",
-    bookingTime: new Date(), departureTime: new Date(),
-    departureStation: "Singapore", arrivalStation: "Japan", seatNumber: 2,
+    id: 2, bookingTime: new Date(),
+    name: "Rose", phone: 88884444, email: "rose@gmail.com",
+    departureTime: new Date(), departureStation: "Singapore",
+    arrivalStation: "Japan",
   },
 ];
 
@@ -89,15 +91,15 @@ function Navigation( {setSelectedPage} ) {
   );
 }
 
-function Container( {travellers, selectedPage}) {
+function Container( {travellers, setTravellers, selectedPage}) {
   logMessage("Container called.");
 
   return (
     <div>
     {selectedPage === 1 && <Homepage travellers = {travellers}/>}
     {selectedPage === 2 && <DisplayTravellers travellers = {travellers}/>}
-    {selectedPage === 3 && <AddTraveller travellers = {travellers}/>}
-    {selectedPage === 4 && <DeleteTraveller travellers = {travellers}/>}
+    {selectedPage === 3 && <AddTraveller travellers = {travellers} setTravellers= {setTravellers}/>}
+    {selectedPage === 4 && <DeleteTraveller travellers = {travellers} setTravellers = {setTravellers}/>}
     </div>
   );
 }
@@ -119,26 +121,25 @@ function Homepage(){
 
 function DisplayTravellerRow( {traveller}) {
   logMessage("DisplayTravellerRow called.");
-  logMessage(`check: ${JSON.stringify(traveller, null, 2)}`);
+  // logMessage(`check: ${JSON.stringify(traveller, null, 2)}`);
 
   return (
     <>
     <td>{traveller.id}</td>
+    <td>{new Date(traveller.bookingTime).toLocaleString()}</td>
     <td>{traveller.name}</td>
     <td>{traveller.phone}</td>
     <td>{traveller.email}</td>
-    <td>{new Date(traveller.bookingTime).toLocaleString()}</td>
     <td>{new Date(traveller.departureTime).toLocaleString()}</td>
     <td>{traveller.departureStation}</td>
     <td>{traveller.arrivalStation}</td>
-    <td>{traveller.seatNumber}</td>
     </>
   );
 }
 
 function DisplayTravellers({travellers}){
   logMessage("DisplayTravellers called.");
-  logMessage(`check: ${JSON.stringify(travellers, null, 2)}`);
+  // logMessage(`check: ${JSON.stringify(travellers, null, 2)}`);
 
   return (
     <div>
@@ -146,15 +147,14 @@ function DisplayTravellers({travellers}){
       <table className="bordered-table">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>Booking ID</th>
+            <th>Booking Time</th>
             <th>Name</th>
             <th>Phone</th>
             <th>Email</th>
-            <th>Booking Time</th>
             <th>Departure Time</th>
             <th>Departure Station</th>
             <th>Arrival Station</th>
-            <th>Seat Number</th>
           </tr>
         </thead>
         <tbody>
@@ -166,11 +166,48 @@ function DisplayTravellers({travellers}){
   );
 }
 
-function AddTraveller(){
+/* -------------------------------------------
+   Section: Question 4
+------------------------------------------- */
+
+function AddTraveller({travellers, setTravellers}){
   logMessage("AddTraveller called.");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const newTraveller = {
+      id: travellers.length + 1,
+      bookingTime: new Date(),
+      name: e.target.travellername.value,
+      phone: e.target.travellerphone.value,
+      email: e.target.travelleremail.value,
+      departureTime: e.target.travellerdeparturetime.value,
+      departureStation: e.target.travellerdeparturestation.value,
+      arrivalStation: e.target.travellerarrivalstation.value,
+    };
+    
+    setTravellers([...travellers, newTraveller]);
+    e.target.reset();
+  }
+
+  React.useEffect(
+    () => {logMessage(`Add new traveller: ${JSON.stringify(travellers, null, 2)}`);}, [travellers]
+);
+
   return (
     <div>
-      Add Traveller test
+      <h2>Add Traveller</h2>
+      <form name="addTraveller" onSubmit={handleSubmit}>
+	    {/*Q4. Placeholder to enter passenger details. Below code is just an example.*/}
+        <label>Name: <input type="text" name="travellername" placeholder="" required/></label>
+        <br/><label>Phone: <input type="text" name="travellerphone" placeholder="" required/></label>
+        <br/><label>Email: <input type="email" name="travelleremail" placeholder="" required /></label>
+        <br/><label>Departure Time: <input type="datetime-local" name="travellerdeparturetime" placeholder="Departure Time" required/></label>
+        <br/><label>Departure Station: <input type="text" name="travellerdeparturestation" placeholder="" required/></label>
+        <br/><label>Arrival Station: <input type="text" name="travellerarrivalstation" placeholder="" required/></label>
+        <br/><button>Add Traveller</button>
+      </form>
     </div>
   );
 }
@@ -211,7 +248,7 @@ function TicketToRide() {
 
         <Navigation setSelectedPage = {setSelectedPage}/>
         <p></p>
-        <Container travellers = {travellers} selectedPage = {selectedPage} />
+        <Container travellers = {travellers} setTravellers = {setTravellers} selectedPage = {selectedPage} />
           
         {/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
         {/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
