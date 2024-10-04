@@ -13,7 +13,6 @@ const logMessage = (message) => {
 /* -------------------------------------------
    Section: Question 1
 ------------------------------------------- */
-
 /*Q1. JS Variable needs to be created here. Below variable is just an example. Try to add more attributes.*/
 const initialTravellers = [
   {
@@ -30,54 +29,10 @@ const initialTravellers = [
   },
 ];
 
-class Add extends React.Component {
-  constructor() {
-    super();
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleSubmit(e) {
-    e.preventDefault();
-    /*Q4. Fetch the passenger details from the add form and call bookTraveller()*/
-  }
-
-  render() {
-    return (
-      <form name="addTraveller" onSubmit={this.handleSubmit}>
-	    {/*Q4. Placeholder to enter passenger details. Below code is just an example.*/}
-        <input type="text" name="travellername" placeholder="Name" />
-        <button>Add</button>
-      </form>
-    );
-  }
-}
-
-
-class Delete extends React.Component {
-  constructor() {
-    super();
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-  handleSubmit(e) {
-    e.preventDefault();
-    /*Q5. Fetch the passenger details from the deletion form and call deleteTraveller()*/
-  }
-
-  render() {
-    return (
-      <form name="deleteTraveller" onSubmit={this.handleSubmit}>
-	    {/*Q5. Placeholder form to enter information on which passenger's ticket needs to be deleted. Below code is just an example.*/}
-	<input type="text" name="travellername" placeholder="Name" />
-        <button>Delete</button>
-      </form>
-    );
-  }
-}
 
 /* -------------------------------------------
    Section: Question 2
 ------------------------------------------- */
-
 function Navigation( {setSelectedPage} ) {
   logMessage("Navigation called.");
 
@@ -97,20 +52,9 @@ function Container( {travellers, setTravellers, selectedPage}) {
   return (
     <div>
     {selectedPage === 1 && <Homepage travellers = {travellers}/>}
-    {selectedPage === 2 && <DisplayTravellers travellers = {travellers}/>}
+    {selectedPage === 2 && <DisplayTravellers travellers = {travellers} setTravellers= {setTravellers}/>}
     {selectedPage === 3 && <AddTraveller travellers = {travellers} setTravellers= {setTravellers}/>}
     {selectedPage === 4 && <DeleteTraveller travellers = {travellers} setTravellers = {setTravellers}/>}
-    </div>
-  );
-}
-
-
-function Homepage(){
-  logMessage("Homepage called.");
-  return (
-    <div>
-      Homepage test
-       {/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
     </div>
   );
 }
@@ -118,7 +62,6 @@ function Homepage(){
 /* -------------------------------------------
    Section: Question 3
 ------------------------------------------- */
-
 function DisplayTravellerRow( {traveller}) {
   logMessage("DisplayTravellerRow called.");
   // logMessage(`check: ${JSON.stringify(traveller, null, 2)}`);
@@ -137,39 +80,58 @@ function DisplayTravellerRow( {traveller}) {
   );
 }
 
-function DisplayTravellers({travellers}){
+function DisplayTravellers({travellers, setTravellers}){
   logMessage("DisplayTravellers called.");
   // logMessage(`check: ${JSON.stringify(travellers, null, 2)}`);
 
-  return (
-    <div>
-      <h2>Display Travellers</h2>
-      <table className="bordered-table">
-        <thead>
-          <tr>
-            <th>Booking ID</th>
-            <th>Booking Time</th>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Departure Time</th>
-            <th>Departure Station</th>
-            <th>Arrival Station</th>
-          </tr>
-        </thead>
-        <tbody>
-          {travellers.map(traveller => <tr key={traveller.id}><DisplayTravellerRow traveller={traveller} /></tr>)}
-        </tbody>
-      </table>
+  /* -------------------------------------------
+   Section: Question 5 - Delete traveller row.
+  ------------------------------------------- */
+  const deleteTravellerRow = (id) => {
+    const newTravellers = travellers.filter(traveller => traveller.id !== id);
+    setTravellers(newTravellers);
+  }
 
-    </div>
-  );
+  if (travellers.length === 0) {
+    return (
+      <div>
+          <h2>Display Travellers</h2>
+          <p>No travellers to display</p>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <h2>Display Travellers</h2>
+        <table className="bordered-table">
+          <thead>
+            <tr>
+              <th>Booking ID</th>
+              <th>Booking Time</th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Departure Time</th>
+              <th>Departure Station</th>
+              <th>Arrival Station</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {travellers.map(traveller =>
+            <tr key={traveller.id}>
+              <DisplayTravellerRow traveller={traveller} />
+              <td><button onClick={()=>deleteTravellerRow(traveller.id)}>Delete</button></td>
+            </tr>)}
+          </tbody>
+        </table>
+      </div>);
+  }
 }
 
 /* -------------------------------------------
    Section: Question 4
 ------------------------------------------- */
-
 function AddTraveller({travellers, setTravellers}){
   logMessage("AddTraveller called.");
 
@@ -193,13 +155,12 @@ function AddTraveller({travellers, setTravellers}){
 
   React.useEffect(
     () => {logMessage(`Add new traveller: ${JSON.stringify(travellers, null, 2)}`);}, [travellers]
-);
+  );
 
   return (
     <div>
       <h2>Add Traveller</h2>
       <form name="addTraveller" onSubmit={handleSubmit}>
-	    {/*Q4. Placeholder to enter passenger details. Below code is just an example.*/}
         <label>Name: <input type="text" name="travellername" placeholder="" required/></label>
         <br/><label>Phone: <input type="text" name="travellerphone" placeholder="" required/></label>
         <br/><label>Email: <input type="email" name="travelleremail" placeholder="" required /></label>
@@ -212,29 +173,79 @@ function AddTraveller({travellers, setTravellers}){
   );
 }
 
-function DeleteTraveller(){
+/* -------------------------------------------
+  Section: Question 5
+------------------------------------------- */
+function DeleteTraveller({travellers, setTravellers}){
   logMessage("DeleteTraveller called.");
+
+  const [attribute, setAttribute] = React.useState('');
+
+  const displayAttribute = () => {
+    if (attribute === ''){
+      return (<>Select a method to delete Traveller!</>);
+    }  else {
+      const labelName = attribute === 'name' ? 'Name' : 'Booking ID';
+      const inputType = attribute === 'name' ? 'text' : 'number';
+
+      return (
+        <>
+          <form name="deleteTraveller" onSubmit={handleSubmit}>
+              <label>{labelName} <input type={inputType} name="travellername" placeholder="" min={attribute==='id'? "0" : undefined} required/></label>
+              <button>Delete Traveller</button>
+            </form>
+        </>
+      );
+    }
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const travellerToBeDeleted = attribute === 'name' ? e.target.travellername.value : parseInt(e.target.travellername.value);
+    const attributeExists = travellers.some(traveller => traveller[attribute] === travellerToBeDeleted);
+
+    if(attributeExists){
+      const newTravellers = travellers.filter(traveller => traveller[attribute] !== travellerToBeDeleted);
+      setTravellers(newTravellers);
+      e.target.reset();
+    } else {
+      alert('Traveller not found!');
+    }
+  }
+
+  React.useEffect(
+    () => {logMessage(`Deleted traveller: ${JSON.stringify(travellers, null, 2)}`);}, [travellers]
+  );
+
   return (
     <div>
-      Delete Traveller test
+      <h2>Delete Traveller</h2>
+      <button onClick = {()=>{setAttribute('name')}}>Delete by Name</button>
+      <button onClick = {()=>{setAttribute('id')}}>Delete by Booking ID</button>
+      <p></p>
+      <div>
+      {displayAttribute()}
+      </div>
     </div>
   );
 }
 
+/* -------------------------------------------
+  Section: Question 5
+------------------------------------------- */
+function Homepage(){
+  logMessage("Homepage called.");
+  return (
+    <div>
+      <h2>Homepage</h2>
+       {/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
+    </div>
+  );
+}
 
-
-// class Homepage extends React.Component {
-// 	constructor() {
-// 	super();
-// 	}
-// 	render(){
-// 	return (
-// 	<div>
-// 		{/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
-// 	</div>);
-// 	}
-// }
-
+/* -------------------------------------------
+  Section: Main app
+------------------------------------------- */
 function TicketToRide() {
   logMessage("TicketToRide called.");
   //logMessage(JSON.stringify(initialTravellers, null, 2));
