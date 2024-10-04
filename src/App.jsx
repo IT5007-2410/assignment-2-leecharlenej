@@ -104,36 +104,109 @@ class Delete extends React.Component {
   }
 }
 
-class Homepage extends React.Component {
-	constructor() {
-	super();
-	}
-	render(){
-	return (
-	<div>
-		{/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
-	</div>);
-	}
+/* -------------------------------------------
+   Section: Question 2
+------------------------------------------- */
+
+function Navigation( {setSelectedPage} ) {
+  logMessage("Navigation called.");
+
+  return (
+    <div>
+      <button onClick={() => setSelectedPage(1)}>Homepage</button>
+      <button onClick={() => setSelectedPage(2)}>Display Travellers</button>
+      <button onClick={() => setSelectedPage(3)}>Add Travellers</button>
+      <button onClick={() => setSelectedPage(4)}>Delete Travellers</button>
+    </div>
+  );
 }
+
+function Container( {selectedPage}) {
+  logMessage("Container called.");
+
+  return (
+    <div>
+    {selectedPage === 1 && <Homepage />}
+    {selectedPage === 2 && <DisplayTraveller />}
+    {selectedPage === 3 && <AddTraveller />}
+    {selectedPage === 4 && <DeleteTraveller />}
+    </div>
+  );
+}
+
+
+function Homepage(){
+  logMessage("Homepage called.");
+  return (
+    <div>
+      Homepage test
+       {/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
+    </div>
+  );
+}
+
+function DisplayTraveller(){
+  logMessage("DisplayTraveller called.");
+  return (
+    <div>
+      Display Traveller test
+    </div>
+  );
+}
+
+function AddTraveller(){
+  logMessage("AddTraveller called.");
+  return (
+    <div>
+      Add Traveller test
+    </div>
+  );
+}
+
+function DeleteTraveller(){
+  logMessage("DeleteTraveller called.");
+  return (
+    <div>
+      Delete Traveller test
+    </div>
+  );
+}
+
+
+
+// class Homepage extends React.Component {
+// 	constructor() {
+// 	super();
+// 	}
+// 	render(){
+// 	return (
+// 	<div>
+// 		{/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
+// 	</div>);
+// 	}
+// }
 
 function TicketToRide() {
   logMessage("TicketToRide called.");
-  logMessage(JSON.stringify(initialTravellers, null, 2));
+  //logMessage(JSON.stringify(initialTravellers, null, 2));
+
+  const [travellers, setTravellers] = React.useState(initialTravellers);
+  const [selectedPage, setSelectedPage] = React.useState(1);
 
   return (
       <div>
         <h1>Ticket To Ride</h1>
-        <div>
-        {/*Q2. Code for Navigation bar. Use basic buttons to create a nav bar. Use states to manage selection.*/}
-        </div>
-        <div>
+
+        <Navigation setSelectedPage = {setSelectedPage}/>
+        <Container selectedPage = {selectedPage} />
+          
+        {/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
         {/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
         {/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
         {/*Q3. Code to call component that Displays Travellers.*/}
         
         {/*Q4. Code to call the component that adds a traveller.*/}
         {/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
-        </div>
       </div>
   );
 }
@@ -146,7 +219,7 @@ function TicketToRide() {
 //     this.deleteTraveller = this.deleteTraveller.bind(this);
 //   }
 
-//   setSelector(value)
+//   setSelect(value)
 //   {
 //   	/*Q2. Function to set the value of component selector variable based on user's button click.*/
 //   }
