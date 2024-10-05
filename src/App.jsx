@@ -14,6 +14,8 @@ const logMessage = (message) => {
    Section: Question 1
 ------------------------------------------- */
 /*Q1. JS Variable needs to be created here. Below variable is just an example. Try to add more attributes.*/
+const totalNumSeats = 10;
+
 const initialTravellers = [
   {
     id: 1, bookingTime: new Date(),
@@ -46,15 +48,15 @@ function Navigation( {setSelectedPage} ) {
   );
 }
 
-function Container( {travellers, setTravellers, selectedPage}) {
+function Container( {selectedPage, travellers, setTravellers} ) {
   logMessage("Container called.");
 
   return (
     <div>
-    {selectedPage === 1 && <Homepage travellers = {travellers}/>}
-    {selectedPage === 2 && <DisplayTravellers travellers = {travellers} setTravellers= {setTravellers}/>}
-    {selectedPage === 3 && <AddTraveller travellers = {travellers} setTravellers= {setTravellers}/>}
-    {selectedPage === 4 && <DeleteTraveller travellers = {travellers} setTravellers = {setTravellers}/>}
+    {selectedPage === 1 && <Homepage travellers = {travellers} />}
+    {selectedPage === 2 && <DisplayTravellers travellers = {travellers} setTravellers= {setTravellers} />}
+    {selectedPage === 3 && <AddTraveller travellers = {travellers} setTravellers= {setTravellers} />}
+    {selectedPage === 4 && <DeleteTraveller travellers = {travellers} setTravellers = {setTravellers} />}
     </div>
   );
 }
@@ -134,6 +136,9 @@ function DisplayTravellers({travellers, setTravellers}){
 ------------------------------------------- */
 function AddTraveller({travellers, setTravellers}){
   logMessage("AddTraveller called.");
+  logMessage(`SeatNumEmpty: ${seatNumEmpty}`);
+
+  const seatNumEmpty = totalNumSeats - travellers.length;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -157,9 +162,19 @@ function AddTraveller({travellers, setTravellers}){
     () => {logMessage(`Add new traveller: ${JSON.stringify(travellers, null, 2)}`);}, [travellers]
   );
 
+  if (seatNumEmpty === 0) {
+    return (
+      <div>
+        <h2>Add Traveller</h2>
+        <p>No more seats are available!</p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <h2>Add Traveller</h2>
+      <p>Empty seats available: {seatNumEmpty}</p>
       <form name="addTraveller" onSubmit={handleSubmit}>
         <label>Name: <input type="text" name="travellername" placeholder="" required/></label>
         <br/><label>Phone: <input type="text" name="travellerphone" placeholder="" required/></label>
@@ -179,9 +194,14 @@ function AddTraveller({travellers, setTravellers}){
 function DeleteTraveller({travellers, setTravellers}){
   logMessage("DeleteTraveller called.");
 
+  const seatNumEmpty = totalNumSeats - travellers.length;
   const [attribute, setAttribute] = React.useState('');
 
   const displayAttribute = () => {
+    if (travellers.length === 0) {
+      return (<>No travellers to delete!</>);
+    }
+
     if (attribute === ''){
       return (<>Select a method to delete Traveller!</>);
     }  else {
@@ -220,6 +240,7 @@ function DeleteTraveller({travellers, setTravellers}){
   return (
     <div>
       <h2>Delete Traveller</h2>
+      <p>Empty seats available: {seatNumEmpty}</p>
       <button onClick = {()=>{setAttribute('name')}}>Delete by Name</button>
       <button onClick = {()=>{setAttribute('id')}}>Delete by Booking ID</button>
       <p></p>
@@ -231,14 +252,53 @@ function DeleteTraveller({travellers, setTravellers}){
 }
 
 /* -------------------------------------------
-  Section: Question 5
+  Section: Question 6
 ------------------------------------------- */
-function Homepage(){
+function Homepage({travellers}){
   logMessage("Homepage called.");
+
+  const seatNumOccupied = travellers.length;
+  const seatNumEmpty = totalNumSeats - travellers.length;
+
+  const legendStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 100px)',
+  }
+
+  const seatStyle = (seatColor) => ({
+    backgroundColor: seatColor,
+    width: '20px',
+    height: '20px',
+    border: '1px solid black',
+    display: 'inline-block',
+  });
+  
   return (
     <div>
       <h2>Homepage</h2>
        {/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
+
+       <div style={legendStyle}>
+        <span>Legend</span>
+        <span><div style={seatStyle('green')} /> Empty</span>
+        <span><div style={seatStyle('lightGrey')} /> Occupied</span>
+       </div>
+
+       <div>
+        <h3>Seat Layout</h3>
+        <div>
+          {Array.from({length: seatNumOccupied}, (_, i) => i+1).map(seat => (
+            <div key={seat} style={seatStyle('lightGrey')} />
+          ))}
+          {Array.from({length: seatNumEmpty}, (_, i) => i+1).map(seat => (
+            <div key={seat} style={seatStyle('green')} />
+          ))}
+          </div>
+
+       </div>
+
+
+
     </div>
   );
 }
@@ -250,8 +310,8 @@ function TicketToRide() {
   logMessage("TicketToRide called.");
   //logMessage(JSON.stringify(initialTravellers, null, 2));
 
-  const [travellers, setTravellers] = React.useState(initialTravellers);
   const [selectedPage, setSelectedPage] = React.useState(1);
+  const [travellers, setTravellers] = React.useState(initialTravellers);
 
   return (
       <div>
@@ -259,15 +319,7 @@ function TicketToRide() {
 
         <Navigation setSelectedPage = {setSelectedPage}/>
         <p></p>
-        <Container travellers = {travellers} setTravellers = {setTravellers} selectedPage = {selectedPage} />
-          
-        {/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
-        {/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
-        {/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
-        {/*Q3. Code to call component that Displays Travellers.*/}
-        
-        {/*Q4. Code to call the component that adds a traveller.*/}
-        {/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
+        <Container selectedPage = {selectedPage} travellers = {travellers} setTravellers = {setTravellers} />
       </div>
   );
 }
