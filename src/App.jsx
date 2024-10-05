@@ -1,33 +1,147 @@
 const logMessageFlag = true;
+const totalNumSeats = 10;
+
+const departureStation = "Singapore Station";
+const arrivalStation = "Bangkok Station";
+const departureTime = new Date(2024, 9, 10, 8, 15, 0).toLocaleString();
 
 /* -------------------------------------------
-   Section: Helper functions - Log message
+   Section: CSS
 ------------------------------------------- */
+const mainStyle = {
+  fontFamily: 'system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+  fontSize: '14px',
+  color: '#33312f',
+  lineHeight: '1.5',
+}
 
+const headerStyle ={
+  margin: '0px 0px 5px 0px',
+}
+
+const navStyle = {
+  backgroundColor: '#e8f1fa',
+  borderBottom: '1px solid #33312f',
+  padding: '10px',
+}
+
+const containerStyle = {
+  paddingLeft: '10px',
+  paddingRight: '10px',
+  display: 'grid',
+  gridTemplateColumns: '20% auto',
+}
+
+const seatDetailsStyle = {
+  width: '50px',
+}
+
+const trainLayoutStyle = {
+  border: '1px solid #33312f',
+  display: 'grid',
+  gridTemplateRows: 'repeat(3,auto)',
+  justifyItems: 'center',
+  width: '120px',
+  gap: '5px',
+}
+
+const seatLayoutStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(2, 20px)',
+  gridGap: '10px',
+}
+
+const legendStyle = {
+  display: 'grid',
+  gridTemplateColumns: '80px 80px 100px',
+}
+
+const seatStyle = (seatColor) => ({
+  backgroundColor: seatColor,
+  width: '20px',
+  height: '20px',
+  border: '1px solid black',
+  display: 'inline-block',
+});
+
+/* -------------------------------------------
+   Section: Helper functions/ components - Log message, TrainDetails, SeatDetails
+------------------------------------------- */
 const logMessage = (message) => {
     if (logMessageFlag) {
         console.log(message);
     };
 };
 
+const TrainDetails = () => {
+  logMessage("TrainDetails called.");
+
+  return (
+    <div>
+      <h3>Train details</h3>
+      <table className="bordered-table">
+        <tbody>
+          <tr>
+            <td><strong>Departure Station</strong></td>
+            <td>{departureStation}</td>
+          </tr>
+          <tr>
+            <td><strong>Arrival Station</strong></td>
+            <td>{arrivalStation}</td>
+          </tr>
+          <tr>
+            <td><strong>Departure Time</strong></td>
+            <td>{departureTime}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+const SeatDetails = ({seatNumOccupied, seatNumEmpty}) => {
+  logMessage("SeatDetails called.");
+
+  return (
+    <div>
+      <h3>Seat details</h3>
+      <table className="bordered-table">
+        <tbody>
+          <tr>
+            <td><strong>Total Seats</strong></td>
+            <td style={seatDetailsStyle}>{totalNumSeats}</td>
+          </tr>
+          <tr>
+            <td><strong>Occupied Seats</strong></td>
+            <td style={seatDetailsStyle}>{seatNumOccupied}</td>
+          </tr>
+          <tr>
+            <td><strong>Empty Seats</strong></td>
+            <td style={seatDetailsStyle}>{seatNumEmpty}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 /* -------------------------------------------
    Section: Question 1
 ------------------------------------------- */
-/*Q1. JS Variable needs to be created here. Below variable is just an example. Try to add more attributes.*/
-const totalNumSeats = 10;
-
 const initialTravellers = [
   {
     id: 1, bookingTime: new Date(),
-    name: "Jack", phone: 88885555, email: "jack@gmail.com",
-    departureTime: new Date(), departureStation: "Singapore",
-    arrivalStation: "Bangkok",
+    name: "Jack", phone: 88885555, email: "jack@gmail.com", mealOption: "Vegetarian",
+    departureTime: departureTime, departureStation: departureStation,
+    arrivalStation: arrivalStation,
+    emergencyContact: {name: "Jill", phone: 88886666},
   },
   {
     id: 2, bookingTime: new Date(),
-    name: "Rose", phone: 88884444, email: "rose@gmail.com",
-    departureTime: new Date(), departureStation: "Singapore",
-    arrivalStation: "Japan",
+    name: "Rose", phone: 88884444, email: "rose@gmail.com", mealOption: "NA",
+    departureTime: departureTime, departureStation: departureStation,
+    arrivalStation: arrivalStation,
+    emergencyContact: {name: "James", phone: 88887777},
   },
 ];
 
@@ -39,12 +153,12 @@ function Navigation( {setSelectedPage} ) {
   logMessage("Navigation called.");
 
   return (
-    <div>
-      <button onClick={() => setSelectedPage(1)}>Homepage</button>
-      <button onClick={() => setSelectedPage(2)}>Display Travellers</button>
-      <button onClick={() => setSelectedPage(3)}>Add Traveller</button>
-      <button onClick={() => setSelectedPage(4)}>Delete Traveller</button>
-    </div>
+    <>
+      <button style={{...mainStyle, marginRight: '5px'}} onClick={() => setSelectedPage(1)}>Homepage</button>
+      <button style={{...mainStyle, marginRight: '5px'}} onClick={() => setSelectedPage(2)}>Display Travellers</button>
+      <button style={{...mainStyle, marginRight: '5px'}} onClick={() => setSelectedPage(3)}>Add Traveller</button>
+      <button style={mainStyle} onClick={() => setSelectedPage(4)}>Delete Traveller</button>
+    </>
   );
 }
 
@@ -52,12 +166,12 @@ function Container( {selectedPage, travellers, setTravellers} ) {
   logMessage("Container called.");
 
   return (
-    <div>
+    <>
     {selectedPage === 1 && <Homepage travellers = {travellers} />}
     {selectedPage === 2 && <DisplayTravellers travellers = {travellers} setTravellers= {setTravellers} />}
     {selectedPage === 3 && <AddTraveller travellers = {travellers} setTravellers= {setTravellers} />}
     {selectedPage === 4 && <DeleteTraveller travellers = {travellers} setTravellers = {setTravellers} />}
-    </div>
+    </>
   );
 }
 
@@ -75,9 +189,12 @@ function DisplayTravellerRow( {traveller}) {
     <td>{traveller.name}</td>
     <td>{traveller.phone}</td>
     <td>{traveller.email}</td>
+    <td>{traveller.mealOption}</td>
     <td>{new Date(traveller.departureTime).toLocaleString()}</td>
     <td>{traveller.departureStation}</td>
     <td>{traveller.arrivalStation}</td>
+    <td>{traveller.emergencyContact.name}</td>
+    <td>{traveller.emergencyContact.phone}</td>
     </>
   );
 }
@@ -98,7 +215,7 @@ function DisplayTravellers({travellers, setTravellers}){
     return (
       <div>
           <h2>Display Travellers</h2>
-          <p>No travellers to display</p>
+          <p>No travellers to display.</p>
       </div>
     );
   } else {
@@ -113,9 +230,12 @@ function DisplayTravellers({travellers, setTravellers}){
               <th>Name</th>
               <th>Phone</th>
               <th>Email</th>
+              <th>Meal Option</th>
               <th>Departure Time</th>
               <th>Departure Station</th>
               <th>Arrival Station</th>
+              <th>Emergency Contact</th>
+              <th>Emergency Contact Phone</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -144,14 +264,19 @@ function AddTraveller({travellers, setTravellers}){
     e.preventDefault();
 
     const newTraveller = {
-      id: travellers.length + 1,
+      id: travellers.reduce((maxId, traveller) => traveller.id > maxId ? traveller.id : maxId, 0) + 1,
       bookingTime: new Date(),
-      name: e.target.travellername.value,
-      phone: e.target.travellerphone.value,
-      email: e.target.travelleremail.value,
-      departureTime: e.target.travellerdeparturetime.value,
-      departureStation: e.target.travellerdeparturestation.value,
-      arrivalStation: e.target.travellerarrivalstation.value,
+      name: e.target.travellerName.value,
+      phone: e.target.travellerPhone.value,
+      email: e.target.travellerEmail.value,
+      mealOption: e.target.mealOption.value,
+      departureTime: departureTime,
+      departureStation: departureStation,
+      arrivalStation: arrivalStation,
+      emergencyContact: {
+        name: e.target.emergencyContactName.value,
+        phone: e.target.emergencyContactPhone.value,
+      },
     };
     
     setTravellers([...travellers, newTraveller]);
@@ -166,26 +291,32 @@ function AddTraveller({travellers, setTravellers}){
     return (
       <div>
         <h2>Add Traveller</h2>
-        <p>No more seats are available!</p>
+        <p>Empty seats available: {seatNumEmpty}</p>
+        <p>No more seats are available.</p>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <h2>Add Traveller</h2>
+        <p>Empty seats available: {seatNumEmpty}</p>
+        <form name="addTraveller" onSubmit={handleSubmit}>
+          <label>Name: <input type="text" name="travellerName" placeholder="" required/></label>
+          <br/><label>Phone: <input type="text" name="travellerPhone" placeholder="" required/></label>
+          <br/><label>Email: <input type="email" name="travellerEmail" placeholder="" required /></label>
+          <br /><label>Meal Option: <select name="mealOption">
+            <option value="NA" selected>NA</option>
+            <option value="Vegetarian">Vegetarian</option>
+            <option value="Non-Vegetarian">Non-Vegetarian</option>
+          </select></label>
+          <br/><label>Emergency Contact Name: <input type="text" name="emergencyContactName" placeholder="" required/></label>
+          <br/><label>Emergency Contact Number: <input type="text" name="emergencyContactPhone" placeholder="" required/></label>
+          
+          <br/><button>Add Traveller</button>
+        </form>
       </div>
     );
   }
-
-  return (
-    <div>
-      <h2>Add Traveller</h2>
-      <p>Empty seats available: {seatNumEmpty}</p>
-      <form name="addTraveller" onSubmit={handleSubmit}>
-        <label>Name: <input type="text" name="travellername" placeholder="" required/></label>
-        <br/><label>Phone: <input type="text" name="travellerphone" placeholder="" required/></label>
-        <br/><label>Email: <input type="email" name="travelleremail" placeholder="" required /></label>
-        <br/><label>Departure Time: <input type="datetime-local" name="travellerdeparturetime" placeholder="Departure Time" required/></label>
-        <br/><label>Departure Station: <input type="text" name="travellerdeparturestation" placeholder="" required/></label>
-        <br/><label>Arrival Station: <input type="text" name="travellerarrivalstation" placeholder="" required/></label>
-        <br/><button>Add Traveller</button>
-      </form>
-    </div>
-  );
 }
 
 /* -------------------------------------------
@@ -198,11 +329,7 @@ function DeleteTraveller({travellers, setTravellers}){
   const [attribute, setAttribute] = React.useState('');
 
   const displayAttribute = () => {
-    if (travellers.length === 0) {
-      return (<>No travellers to delete!</>);
-    }
-
-    if (attribute === ''){
+      if (attribute === ''){
       return (<>Select a method to delete Traveller!</>);
     }  else {
       const labelName = attribute === 'name' ? 'Name' : 'Booking ID';
@@ -211,8 +338,8 @@ function DeleteTraveller({travellers, setTravellers}){
       return (
         <>
           <form name="deleteTraveller" onSubmit={handleSubmit}>
-              <label>{labelName} <input type={inputType} name="travellername" placeholder="" min={attribute==='id'? "0" : undefined} required/></label>
-              <button>Delete Traveller</button>
+              <label>{labelName} <input type={inputType} name="travellername" placeholder="" min={attribute==='id'? "1" : undefined} required/></label>
+              <button style={{...mainStyle, marginLeft:'5px'}}>Delete Traveller</button>
             </form>
         </>
       );
@@ -236,19 +363,29 @@ function DeleteTraveller({travellers, setTravellers}){
   React.useEffect(
     () => {logMessage(`Deleted traveller: ${JSON.stringify(travellers, null, 2)}`);}, [travellers]
   );
-
-  return (
-    <div>
-      <h2>Delete Traveller</h2>
-      <p>Empty seats available: {seatNumEmpty}</p>
-      <button onClick = {()=>{setAttribute('name')}}>Delete by Name</button>
-      <button onClick = {()=>{setAttribute('id')}}>Delete by Booking ID</button>
-      <p></p>
+  
+  if (travellers.length === 0) {
+    return (
       <div>
-      {displayAttribute()}
+        <h2>Delete Traveller</h2>
+        <p>Empty seats available: {seatNumEmpty}</p>
+        <p>No travellers to delete.</p>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div>
+        <h2>Delete Traveller</h2>
+        <p>Empty seats available: {seatNumEmpty}</p>
+        <button style={{...mainStyle, marginRight: '5px'}} onClick = {()=>{setAttribute('name')}}>Delete by Name</button>
+        <button style={mainStyle} onClick = {()=>{setAttribute('id')}}>Delete by Booking ID</button>
+        <p></p>
+        <div>
+        {displayAttribute()}
+        </div>
+      </div>
+    );
+  }
 }
 
 /* -------------------------------------------
@@ -260,45 +397,37 @@ function Homepage({travellers}){
   const seatNumOccupied = travellers.length;
   const seatNumEmpty = totalNumSeats - travellers.length;
 
-  const legendStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 100px)',
+  const displaySeatLayout = (seatNumber, color) => {
+    return (
+      <>
+        {Array.from({length: seatNumber}, (s, index) => index+1).map(seat => (
+        <div key={seat} style={seatStyle(color)} />))}
+      </>
+    );
   }
 
-  const seatStyle = (seatColor) => ({
-    backgroundColor: seatColor,
-    width: '20px',
-    height: '20px',
-    border: '1px solid black',
-    display: 'inline-block',
-  });
-  
   return (
     <div>
       <h2>Homepage</h2>
-       {/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
 
        <div style={legendStyle}>
-        <span>Legend</span>
+        <span><strong>Legend</strong></span>
         <span><div style={seatStyle('green')} /> Empty</span>
         <span><div style={seatStyle('lightGrey')} /> Occupied</span>
        </div>
 
        <div>
         <h3>Seat Layout</h3>
-        <div>
-          {Array.from({length: seatNumOccupied}, (_, i) => i+1).map(seat => (
-            <div key={seat} style={seatStyle('lightGrey')} />
-          ))}
-          {Array.from({length: seatNumEmpty}, (_, i) => i+1).map(seat => (
-            <div key={seat} style={seatStyle('green')} />
-          ))}
-          </div>
-
+        <div style={trainLayoutStyle}>
+          <span><em>(front)</em></span>
+          <div style={seatLayoutStyle}>
+            {displaySeatLayout(seatNumOccupied, 'lightGrey')}
+            {displaySeatLayout(seatNumEmpty, 'green')}
+            </div>
+            <span><em>(back)</em></span>
+        </div>
+        
        </div>
-
-
-
     </div>
   );
 }
@@ -314,65 +443,27 @@ function TicketToRide() {
   const [travellers, setTravellers] = React.useState(initialTravellers);
 
   return (
-      <div>
-        <h1>Ticket To Ride</h1>
+      <div style={mainStyle}>
 
-        <Navigation setSelectedPage = {setSelectedPage}/>
+        <div style={navStyle}>
+          <h1 style={headerStyle}>Ticket To Ride</h1>
+          <Navigation setSelectedPage = {setSelectedPage}/>
+          <p></p>
+        </div>
+
         <p></p>
-        <Container selectedPage = {selectedPage} travellers = {travellers} setTravellers = {setTravellers} />
+        <div style={containerStyle}>
+          <div style={{borderRight:'1px solid #33312f', paddingRight:'20px'}}>
+            <TrainDetails />
+            <SeatDetails seatNumOccupied = {travellers.length} seatNumEmpty = {totalNumSeats - travellers.length} />
+          </div>
+          <div style={{marginLeft:'20px'}} ><Container selectedPage = {selectedPage} travellers = {travellers} setTravellers = {setTravellers} /></div>
+          
+        </div>
+        
       </div>
   );
 }
-
-// class TicketToRide extends React.Component {
-//   constructor() {
-//     super();
-//     this.state = { travellers: [], selector: 1};
-//     this.bookTraveller = this.bookTraveller.bind(this);
-//     this.deleteTraveller = this.deleteTraveller.bind(this);
-//   }
-
-//   setSelect(value)
-//   {
-//   	/*Q2. Function to set the value of component selector variable based on user's button click.*/
-//   }
-//   componentDidMount() {
-//     this.loadData();
-//   }
-
-//   loadData() {
-//     setTimeout(() => {
-//       this.setState({ travellers: initialTravellers });
-//     }, 500);
-//   }
-
-//   bookTraveller(passenger) {
-// 	    /*Q4. Write code to add a passenger to the traveller state variable.*/
-//   }
-
-//   deleteTraveller(passenger) {
-// 	  /*Q5. Write code to delete a passenger from the traveller state variable.*/
-//   }
-//   render() {
-//     return (
-//       <div>
-//         <h1>Ticket To Ride</h1>
-// 	<div>
-// 	    {/*Q2. Code for Navigation bar. Use basic buttons to create a nav bar. Use states to manage selection.*/}
-// 	</div>
-// 	<div>
-// 		{/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
-// 		{/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
-// 		{/*Q3. Code to call component that Displays Travellers.*/}
-		
-// 		{/*Q4. Code to call the component that adds a traveller.*/}
-// 		{/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
-// 	</div>
-//       </div>
-//     );
-//   }
-// }
-
 
 const element = <TicketToRide />;
 ReactDOM.render(element, document.getElementById('contents'));
