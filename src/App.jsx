@@ -305,7 +305,7 @@ function AddTraveller({travellers, setTravellers}){
           <br/><label>Phone: <input type="text" name="travellerPhone" placeholder="" required/></label>
           <br/><label>Email: <input type="email" name="travellerEmail" placeholder="" required /></label>
           <br /><label>Meal Option: <select name="mealOption">
-            <option value="NA" selected>NA</option>
+            <option value="NA" defaultValue>NA</option>
             <option value="Vegetarian">Vegetarian</option>
             <option value="Non-Vegetarian">Non-Vegetarian</option>
           </select></label>
@@ -330,7 +330,7 @@ function DeleteTraveller({travellers, setTravellers}){
 
   const displayAttribute = () => {
       if (attribute === ''){
-      return (<>Select a method to delete Traveller!</>);
+      return (<>Select a method to delete traveller!</>);
     }  else {
       const labelName = attribute === 'name' ? 'Name' : 'Booking ID';
       const inputType = attribute === 'name' ? 'text' : 'number';

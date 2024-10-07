@@ -13,3 +13,8 @@ cd /home/it5007/
  * When pushing a change to remote repository, you will be asked for your github username and password. Recently, github has replaced passwords with personal access tokens. To generate a personal access token, follow the instructions in this link: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token.
  * ```$git push```
  * If you are coding in a branch use the following command instead: ```$git push -u origin <mybranchname>```
+
+ ## Details
+ Lee Shu Ling, Charlene Judith (A0286974E)
+ 
+ To view app in production: [(here)](https://it5007-assignment2.netlify.app/)
