@@ -304,8 +304,8 @@ function AddTraveller({travellers, setTravellers}){
           <label>Name: <input type="text" name="travellerName" placeholder="" required/></label>
           <br/><label>Phone: <input type="text" name="travellerPhone" placeholder="" required/></label>
           <br/><label>Email: <input type="email" name="travellerEmail" placeholder="" required /></label>
-          <br /><label>Meal Option: <select name="mealOption">
-            <option value="NA" selected>NA</option>
+          <br /><label>Meal Option: <select name="mealOption"  defaultValue="NA">
+            <option value="NA">NA</option>
             <option value="Vegetarian">Vegetarian</option>
             <option value="Non-Vegetarian">Non-Vegetarian</option>
           </select></label>
