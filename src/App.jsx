@@ -256,9 +256,9 @@ function DisplayTravellers({travellers, setTravellers}){
 ------------------------------------------- */
 function AddTraveller({travellers, setTravellers}){
   logMessage("AddTraveller called.");
-  logMessage(`SeatNumEmpty: ${seatNumEmpty}`);
-
+  
   const seatNumEmpty = totalNumSeats - travellers.length;
+  logMessage(`SeatNumEmpty: ${seatNumEmpty}`);
 
   const handleSubmit = (e) => {
     e.preventDefault();
