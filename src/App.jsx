@@ -262,25 +262,32 @@ function AddTraveller({travellers, setTravellers}){
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const newTraveller = {
-      id: travellers.reduce((maxId, traveller) => traveller.id > maxId ? traveller.id : maxId, 0) + 1,
-      bookingTime: new Date(),
-      name: e.target.travellerName.value,
-      phone: e.target.travellerPhone.value,
-      email: e.target.travellerEmail.value,
-      mealOption: e.target.mealOption.value,
-      departureTime: departureTime,
-      departureStation: departureStation,
-      arrivalStation: arrivalStation,
-      emergencyContact: {
-        name: e.target.emergencyContactName.value,
-        phone: e.target.emergencyContactPhone.value,
-      },
-    };
     
-    setTravellers([...travellers, newTraveller]);
-    e.target.reset();
+    const duplicateEmail = travellers.some(traveller => traveller.email === e.target.travellerEmail.value);
+
+    if (duplicateEmail) {
+      alert('Booking with this email already exists. Please enter a different email.');
+      return;
+    } else {
+      const newTraveller = {
+        id: travellers.reduce((maxId, traveller) => traveller.id > maxId ? traveller.id : maxId, 0) + 1,
+        bookingTime: new Date(),
+        name: e.target.travellerName.value,
+        phone: e.target.travellerPhone.value,
+        email: e.target.travellerEmail.value,
+        mealOption: e.target.mealOption.value,
+        departureTime: departureTime,
+        departureStation: departureStation,
+        arrivalStation: arrivalStation,
+        emergencyContact: {
+          name: e.target.emergencyContactName.value,
+          phone: e.target.emergencyContactPhone.value,
+        },
+      };
+      
+      setTravellers([...travellers, newTraveller]);
+      e.target.reset();
+    }
   }
 
   React.useEffect(
@@ -300,6 +307,7 @@ function AddTraveller({travellers, setTravellers}){
       <div>
         <h2>Add Traveller</h2>
         <p>Empty seats available: {seatNumEmpty}</p>
+        <p>Each booking is limited to a single email address.</p>
         <form name="addTraveller" onSubmit={handleSubmit}>
           <label>Name: <input type="text" name="travellerName" placeholder="" required/></label>
           <br/><label>Phone: <input type="text" name="travellerPhone" placeholder="" required/></label>
@@ -341,6 +349,11 @@ function DeleteTraveller({travellers, setTravellers}){
               <label>{labelName} <input type={inputType} name="travellername" placeholder="" min={attribute==='id'? "1" : undefined} required/></label>
               <button style={{...mainStyle, marginLeft:'5px'}}>Delete Traveller</button>
             </form>
+            {attribute === 'name' && 
+              <p>
+              Deleting travellers by name will delete all travellers with the same name.<br />Please check properly.
+              </p>
+            }
         </>
       );
     }
